@@ -45,11 +45,22 @@ def login(origin):
     if wait.until(EC.visibility_of_element_located((By.CLASS_NAME, "swipe-card-info"))):
         print("Login Successful")
 
+def like():
+    for _ in range(20):
+        if driver.find_elements(By.CLASS_NAME, "match-popup-link"):
+            wait.until(EC.element_to_be_clickable((By.CLASS_NAME, "match-popup-link"))).click()
+            print("Matched with someone")
+            time.sleep(1)
+
+        wait.until(EC.element_to_be_clickable((By.CLASS_NAME, "btn-like"))).click()
+        time.sleep(1)
+
 try:
     driver.get(url)
     original_window = driver.current_window_handle
 
     login(original_window)
+    like()
 finally:
     time.sleep(60)
     driver.quit()
