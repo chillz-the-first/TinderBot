@@ -1,6 +1,7 @@
 import time
 
 from selenium import webdriver
+from selenium.common import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -47,13 +48,17 @@ def login(origin):
 
 def like():
     for _ in range(20):
-        if driver.find_elements(By.CLASS_NAME, "match-popup-link"):
-            wait.until(EC.element_to_be_clickable((By.CLASS_NAME, "match-popup-link"))).click()
-            print("Matched with someone")
-            time.sleep(1)
-
-        wait.until(EC.element_to_be_clickable((By.CLASS_NAME, "btn-like"))).click()
         time.sleep(1)
+        try:
+            if driver.find_elements(By.CLASS_NAME, "match-popup-link"):
+                wait.until(EC.element_to_be_clickable((By.CLASS_NAME, "match-popup-link"))).click()
+                print("Matched with someone")
+
+            wait.until(EC.element_to_be_clickable((By.CLASS_NAME, "btn-like"))).click()
+        except TimeoutException:
+            print("Card timed out, skipping")
+            continue
+
 
 try:
     driver.get(url)
@@ -62,5 +67,5 @@ try:
     login(original_window)
     like()
 finally:
-    time.sleep(60)
+    time.sleep(20)
     driver.quit()
